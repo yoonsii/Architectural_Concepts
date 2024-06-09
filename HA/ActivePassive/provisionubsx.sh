@@ -102,7 +102,7 @@ echo $POSITION_VARIABLE > /tmp/position.txt
 
 #Connect to MySQL
 sudo mysql << EOF
-CREATE USER 'yoonsi'@'localhost' IDENTIFIED BY 'Deathscythe1';
+CREATE USER 'yoonsi'@'localhost' IDENTIFIED BY '********';
 CREATE DATABASE IF NOT EXISTS nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 GRANT ALL PRIVILEGES ON nextcloud.* TO 'yoonsi'@'localhost';
 FLUSH PRIVILEGES;
