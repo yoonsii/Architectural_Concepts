@@ -40,25 +40,6 @@ Vagrant.configure("2") do |config|
     ubsx2.vm.provision "file", source: "provisionubsx2.sh", destination: "/tmp/provision2.sh"
     ubsx2.vm.provision "shell", inline: "bash /tmp/provision2.sh", privileged: true
   end
-
-  #############################
-  # DEFINE VM 3 MOUNT         #
-  #############################
-
-  # config.vm.define "ubsx3" do |ubsx3|
-  #   ubsx2.vm.hostname = "ubsx3"
-  #   ubsx2.vm.network "public_network", bridge: "en0"
-  #   # ubsx2.vm.network "private_network", virtualbox__intnet: "HostNetwork"
-  #   ubsx2.vm.network "private_network", type: 'dhcp', name: 'HostNetwork', adapter: 2
-
-  #   ubsx2.vm.provider "virtualbox" do |vb|
-  #     vb.name = "ubuntu-sandbox3"
-  #   end
-
-  #   ubsx2.vm.provision "file", source: "provisionubsx3.sh", destination: "/tmp/provision3.sh"
-  #   ubsx2.vm.provision "shell", inline: "bash /tmp/provision3.sh", privileged: true
-  # end
-
 end
 
 
