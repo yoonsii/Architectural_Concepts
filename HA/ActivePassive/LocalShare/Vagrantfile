@@ -1,0 +1,66 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/focal64"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "2048"
+    vb.cpus = 1
+  end
+
+  #############################
+  # DEFINE VM 3 MOUNT         #
+  #############################
+
+  config.vm.define "ubsx3" do |ubsx3|
+    ubsx3.vm.hostname = "ubsx3"
+    ubsx3.vm.network "public_network", bridge: "en0"
+    # ubsx2.vm.network "private_network", virtualbox__intnet: "HostNetwork"
+    ubsx3.vm.network "private_network", type: 'dhcp', name: 'HostNetwork', adapter: 2
+
+    ubsx3.vm.provider "virtualbox" do |vb|
+      vb.name = "ubuntu-sandbox_fs"
+    end
+
+    ubsx3.vm.provision "file", source: "provisionubsx3.sh", destination: "/tmp/provision3.sh"
+    ubsx3.vm.provision "shell", inline: "bash /tmp/provision3.sh", privileged: true
+  end
+
+  config.vm.define "ubsx" do |ubsx|
+    ubsx.vm.hostname = "ubsx"
+    ubsx.vm.network "public_network", bridge: "en0"
+    # ubsx.vm.network "private_network", virtualbox__intnet: "HostNetwork"
+    ubsx.vm.network "private_network", type: 'dhcp', name: 'HostNetwork', adapter: 2
+
+    ubsx.vm.provider "virtualbox" do |vb|
+      vb.name = "ubuntu-sandbox_prim"
+    end
+
+    ubsx.vm.provision "file", source: "provisionubsx.sh", destination: "/tmp/provision.sh"
+    ubsx.vm.provision "shell", inline: "bash /tmp/provision.sh", privileged: true
+  end
+
+  #############################
+  # DEFINE VM 2 SLAVE         #
+  #############################
+
+  config.vm.define "ubsx2" do |ubsx2|
+    ubsx2.vm.hostname = "ubsx2"
+    ubsx2.vm.network "public_network", bridge: "en0"
+    # ubsx2.vm.network "private_network", virtualbox__intnet: "HostNetwork"
+    ubsx2.vm.network "private_network", type: 'dhcp', name: 'HostNetwork', adapter: 2
+
+    ubsx2.vm.provider "virtualbox" do |vb|
+      vb.name = "ubuntu-sandbox_sec"
+    end
+
+    ubsx2.vm.provision "file", source: "provisionubsx2.sh", destination: "/tmp/provision2.sh"
+    ubsx2.vm.provision "shell", inline: "bash /tmp/provision2.sh", privileged: true
+  end
+
+
+end
+
+
+
