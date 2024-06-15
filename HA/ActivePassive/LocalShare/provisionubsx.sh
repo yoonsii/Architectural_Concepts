@@ -149,9 +149,9 @@ sudo mkdir /mnt/nextcloud
 # sudo mount -t cifs //20240608mystorage.file.core.windows.net/20240608fileshare /mnt/nextcloud -o credentials=/etc/smbcredentials/20240608mystorage.cred,uid=33,gid=33,dir_mode=0750,file_mode=0750,serverino,nosharesock,actimeo=30
 #       sudo chown -R www-data: /mnt/nextcloud
 #       sudo chmod -R 750 /mnt/nextcloud
-sudo apt install nfs-common
+sudo apt install nfs-common bindfs -y
 sudo mount 192.168.56.52:/srv/nfs/share /mnt/nextcloud
-
+sudo bindfs -u www-data -g www-data /mnt/nextcloud /mnt/nextcloud
 
 
 cd /var/www/html/nextcloud/
@@ -161,7 +161,7 @@ sudo -u www-data php occ  maintenance:install \
 --database-user='yoonsi' --database-pass='Deathscythe1' \
 --admin-user='admin' --admin-pass='password'
 
-sudo rsync -avz /var/www/html/nextcloud/data/ /mnt/nextcloud/
+sudo rsync -avz /var/www/html/nextcloud/data/ /mnt/nextcloud/ | tee /tmp/rync.log
 
 cd /var/www/html/nextcloud/config/
 
