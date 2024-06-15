@@ -7,14 +7,14 @@ apt-get update
 apt upgrade
 
 
-sudo apt install nfs-kernel-server
+sudo apt install -y nfs-kernel-server
 
 sudo mkdir -p /srv/nfs/share
 
-sudo chown www-data:nogroup /srv/nfs/share
-sudo chmod 777 /srv/nfs/share
+sudo chown www-data: /srv/nfs/share
+sudo chmod 0775 /srv/nfs/share
 
-sudo cat "/srv/nfs/share    *(rw,sync,no_subtree_check)" >> /etc/exports
+sudo echo "/srv/nfs/share    *(rw,sync,no_subtree_check,no_root_squash)" >> /etc/exports
 
 sudo exportfs -a
 
