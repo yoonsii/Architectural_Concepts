@@ -102,24 +102,30 @@ sudo mkdir /mnt/nextcloud
 # sudo mount -t cifs //20240608mystorage.file.core.windows.net/20240608fileshare /mnt/nextcloud -o credentials=/etc/smbcredentials/20240608mystorage.cred,uid=33,gid=33,dir_mode=0750,file_mode=0750,serverino,nosharesock,actimeo=30
 #       sudo chown -R www-data: /mnt/nextcloud
 #       sudo chmod -R 750 /mnt/nextcloud
-sudo apt install nfs-common
+sudo apt install nfs-common bindfs -y
 sudo mount 192.168.56.52:/srv/nfs/share /mnt/nextcloud
+sudo bindfs -u www-data -g www-data /mnt/nextcloud /mnt/nextcloud
 
 
 #Install Nextcloud to failover
 
 cd /var/www/html/nextcloud/
 
+# create dummy databse
+sudo mysql -u root -e "CREATE DATABASE IF NOT EXISTS nextcloud2 CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+sudo mysql -u root -e "GRANT ALL PRIVILEGES ON nextcloud2.* TO 'yoonsi'@'localhost';"
+
 # first lets try with removing the admin user - already in database
 
 sudo -u www-data php occ  maintenance:install \
---database='mysql' --database-name='nextcloud' \
+--database='mysql' --database-name='nextcloud2' \
 --database-user='yoonsi' --database-pass='Deathscythe1' \
 --admin-user='admin2' --admin-pass='password'
 
 sudo mysql << EOF
 use nextcloud;
 delete from oc_storages where numeric_id=2;
+delete from oc_users where uid='admin2';
 EOF
 
 cd /var/www/html/nextcloud/config/
@@ -149,10 +155,16 @@ new_value="'datadirectory' => '/mnt/nextcloud'"
 
     sed -i "s|'datadirectory' => '.*'|$new_value|" "$config_file"
 
+sudo sed -i.bak "s/'nextcloud2'/'nextcloud'/g" /var/www/html/nextcloud/config/config.php
+
+
 
 chown -R www-data: /var/www/html/nextcloud/
 chmod -R 755 /var/www/html/nextcloud
 
+sudo mysql -u root -e "DROP DATABASE nextcloud2;"
+
+sudo systemctl restart apache2    
 
 sudo ufw enable
 sudo ufw allow 5405/udp
