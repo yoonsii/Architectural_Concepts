@@ -1,46 +1,43 @@
 
-      # update app repository
-    yes | sudo ufw enable 
+# update app repository
+yes | sudo ufw enable 
 
-      echo "update app repository"
+echo "update app repository"
 
-      apt-get update
-      apt upgrade
+apt-get update
+apt upgrade
 
-      # install all the required apps
-      echo "install all the required apps"
-      sudo apt install -y apache2 mariadb-server libapache2-mod-php php-gd php-mysql \
-      php-curl php-mbstring php-intl php-gmp php-bcmath php-xml php-imagick php-zip
-      sudo apt install -y software-properties-common
-      sudo add-apt-repository ppa:ondrej/php
-      sudo apt update
-   	  sudo apt install -y php8.2
-   	  php --version
+# install all the required apps
+echo "install all the required apps"
+sudo apt install -y apache2 mariadb-server libapache2-mod-php php-gd php-mysql \
+php-curl php-mbstring php-intl php-gmp php-bcmath php-xml php-imagick php-zip
+sudo apt install -y software-properties-common
+sudo add-apt-repository ppa:ondrej/php
+sudo apt update
+sudo apt install -y php8.2
+php --version
 
-      # disable php7.4
-      a2dismod php7.4 
+# disable php7.4
+a2dismod php7.4 
 
-      # enable php8.2
-      a2enmod php8.2 
-    
-    # Install PHP 8.2 and required modules
+# enable php8.2
+a2enmod php8.2 
 
-      sudo apt install -y php8.2 php8.2-cli php8.2-fpm php8.2-curl php8.2-gd php8.2-mbstring php8.2-xml php8.2-zip php8.2-mysql php8.2-bcmath php8.2-intl php8.2-imap php8.2-opcache php8.2-readline php8.2-soap php8.2-xsl
-      systemctl stop apache2
-      systemctl status apache2
-      systemctl start apache2
+# Install PHP 8.2 and required modules
+sudo apt install -y php8.2 php8.2-cli php8.2-fpm php8.2-curl php8.2-gd php8.2-mbstring php8.2-xml php8.2-zip php8.2-mysql php8.2-bcmath php8.2-intl php8.2-imap php8.2-opcache php8.2-readline php8.2-soap php8.2-xsl
+systemctl stop apache2
+systemctl status apache2
+systemctl start apache2
 
-    # Download and install NextCloud
+# Download and install NextCloud
+cd /var/www/html/
+wget https://download.nextcloud.com/server/releases/latest.tar.bz2
+tar -xvf latest.tar.bz2
+  
+chown -R www-data: nextcloud/
+chmod -R 755 nextcloud
 
-      cd /var/www/html/
-      wget https://download.nextcloud.com/server/releases/latest.tar.bz2
-      tar -xvf latest.tar.bz2
-        
-      chown -R www-data: nextcloud/
-      chmod -R 755 nextcloud
-
-    #Create the NextCloud config file for apache site
-
+#Create the NextCloud config file for apache site
 cat << EOF > /etc/apache2/sites-available/nextcloud.conf
   Alias /nextcloud "/var/www/html/nextcloud/"
 
